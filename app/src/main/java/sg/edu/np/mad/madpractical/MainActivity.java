@@ -18,14 +18,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        User user1 = new User("Addison", "Y2 IT Student", 1, false);
 
         // -- Getting Data from ListActivity --
         Intent receive = getIntent();
-        String randNum = receive.getStringExtra("Number");
-        Log.v(TAG, "(ListActivity) Number: " + randNum);
+        User user = (User) receive.getSerializableExtra("user");
         TextView header = findViewById(R.id.header);
-        header.setText("MAD: " + randNum);
+        Log.v(TAG, "(ListActivity) Number: " + user);
+        header.setText("Name-" + user.getName());
+
 
 
         // --- Previous Wk2 Codes ---
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         Button messageButton = findViewById(R.id.messageButton);
 
         // Check if user is following
-        if (user1.followed){
+        if (user.followed){
             followButton.setText("Unfollow");
         }
 
@@ -42,12 +42,12 @@ public class MainActivity extends AppCompatActivity {
         followButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (user1.followed){
-                    user1.followed = false;
+                if (user.followed){
+                    user.followed = false;
                     followButton.setText("Follow");
                     Toast.makeText(getApplicationContext(), "Unfollowed", Toast.LENGTH_SHORT).show();
                 } else {
-                    user1.followed = true;
+                    user.followed = true;
                     followButton.setText("Unfollow");
                     Toast.makeText(getApplicationContext(), "Followed", Toast.LENGTH_SHORT).show();
                 }

@@ -26,17 +26,16 @@ public class ListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
         // img = (ImageView) findViewById(R.id.imageLogo);
-        DBHandler dbHandler = new DBHandler(this,null,null,1);
 
         // -- On Image click --
         // ImageClick();
 
         // --- Generate 20 Random Users  ---
         ArrayList<User> userList = new ArrayList<User>();
-        userList = GenerateUsers(20, dbHandler);
+        userList = GenerateUsers(20);
 
         // --- Setup Adapter ---
-        RecyclerAdapterSetup(dbHandler.getUser());
+        RecyclerAdapterSetup(userList);
     }
 
     public void ImageClick(){
@@ -77,7 +76,7 @@ public class ListActivity extends AppCompatActivity {
             }
         });
     }
-    public ArrayList<User> GenerateUsers(int number, DBHandler dbHandler){
+    public ArrayList<User> GenerateUsers(int number){
         Random rand = new Random();
         ArrayList<Boolean> boolList = new ArrayList<Boolean>();
         boolList.add(true);
@@ -92,18 +91,16 @@ public class ListActivity extends AppCompatActivity {
 
             User user = new User(name, description, i, followed);
             userList.add(user);
-            dbHandler.addUser(user); // add user to Database
             // Log.v(TAG, "Bool :"+ followed + " Name :"+ user.name);
         }
         return userList;
     }
     public void RecyclerAdapterSetup(ArrayList<User> userList ){
         recyclerview = findViewById(R.id.recycler);
-        adapter adapter = new adapter(userList);
+        adapter adapter = new adapter(ListActivity.this,userList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerview.setLayoutManager(layoutManager);
         recyclerview.setItemAnimator(new DefaultItemAnimator());
         recyclerview.setAdapter(adapter);
     }
-
 }
