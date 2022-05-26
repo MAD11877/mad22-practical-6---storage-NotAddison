@@ -5,12 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class DBHandler extends SQLiteOpenHelper {
+    private static final String TAG = "DB";
     public static String DATABASE_NAME = "Users.db";
     public static String TABLE_USERS = "Users";
     public static String COLUMN_NAME= "Name";
@@ -45,27 +47,22 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query,null);
 
-        User queryData = new User();
+
         ArrayList<User> userList = new ArrayList<User>();
 
         if (cursor.moveToFirst()){
-            queryData.setName(cursor.getString(0));
-            queryData.setDescription(cursor.getString(1));
-            queryData.setId(Integer.parseInt(cursor.getString(2)));
-            queryData.setFollowed(Boolean.parseBoolean(cursor.getString(3)));
-            userList.add(queryData);
-
-            while(cursor.moveToNext()){
+            do{
+                User queryData = new User();
                 queryData.setName(cursor.getString(0));
                 queryData.setDescription(cursor.getString(1));
                 queryData.setId(Integer.parseInt(cursor.getString(2)));
                 queryData.setFollowed(Boolean.parseBoolean(cursor.getString(3)));
+                Log.v(TAG,"User"+ queryData.getName());
                 userList.add(queryData);
             }
+            while(cursor.moveToNext());
         }
-        else{
-            queryData = null;
-        }
+
         db.close();
         return userList;
     }
@@ -97,8 +94,11 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(COLUMN_ID, user.getId());
         values.put(COLUMN_FOLLOWED, user.isFollowed());
 
-        // Update DB
-        db.update("Users",values,"id=?",new String[]{String.valueOf(user.getId())});
 
+        // Update DB
+        db.update(TABLE_USERS, values,COLUMN_ID + " = ?",
+                new String[] { String.valueOf(user.getId()) });
+        cursor.close();
+        db.close();
     }
 }

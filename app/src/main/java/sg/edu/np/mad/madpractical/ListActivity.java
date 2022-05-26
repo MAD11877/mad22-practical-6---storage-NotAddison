@@ -34,8 +34,12 @@ public class ListActivity extends AppCompatActivity {
 
         // --- Generate 20 Random Users  ---
         ArrayList<User> userList = new ArrayList<User>();
-        userList = GenerateUsers(20,dbHandler);
+        // userList = GenerateUsers(20,dbHandler);
         Log.v(TAG, String.valueOf(dbHandler.getUser().size()));
+
+        for (User user:dbHandler.getUser()){
+            Log.v(TAG,"" + user.getName());
+        }
 
         // --- Setup Adapter ---
         RecyclerAdapterSetup(dbHandler.getUser());
