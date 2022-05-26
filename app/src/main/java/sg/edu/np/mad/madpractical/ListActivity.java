@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.DatabaseErrorHandler;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,16 +27,18 @@ public class ListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
         // img = (ImageView) findViewById(R.id.imageLogo);
+        DBHandler dbHandler = new DBHandler(this,null,null,1);
 
         // -- On Image click --
         // ImageClick();
 
         // --- Generate 20 Random Users  ---
         ArrayList<User> userList = new ArrayList<User>();
-        userList = GenerateUsers(20);
+        userList = GenerateUsers(20,dbHandler);
+        Log.v(TAG, String.valueOf(dbHandler.getUser().size()));
 
         // --- Setup Adapter ---
-        RecyclerAdapterSetup(userList);
+        RecyclerAdapterSetup(dbHandler.getUser());
     }
 
     public void ImageClick(){
@@ -76,7 +79,7 @@ public class ListActivity extends AppCompatActivity {
             }
         });
     }
-    public ArrayList<User> GenerateUsers(int number){
+    public ArrayList<User> GenerateUsers(int number, DBHandler dbHandler){
         Random rand = new Random();
         ArrayList<Boolean> boolList = new ArrayList<Boolean>();
         boolList.add(true);
@@ -91,7 +94,8 @@ public class ListActivity extends AppCompatActivity {
 
             User user = new User(name, description, i, followed);
             userList.add(user);
-            // Log.v(TAG, "Bool :"+ followed + " Name :"+ user.name);
+            dbHandler.addUser(user);
+            Log.v(TAG, "Bool :"+ followed + " Name :"+ user.name);
         }
         return userList;
     }

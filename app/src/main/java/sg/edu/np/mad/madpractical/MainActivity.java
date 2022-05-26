@@ -26,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
         Log.v(TAG, "(ListActivity) Number: " + user);
         header.setText("Name-" + user.getName());
 
-
+        // -- Database
+        DBHandler dbHandler = new DBHandler(this,null,null,1);
 
         // --- Previous Wk2 Codes ---
         // Get button(s)
@@ -44,10 +45,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (user.followed){
                     user.followed = false;
+                    dbHandler.updateUser(user); // Update User
                     followButton.setText("Follow");
                     Toast.makeText(getApplicationContext(), "Unfollowed", Toast.LENGTH_SHORT).show();
                 } else {
                     user.followed = true;
+                    dbHandler.updateUser(user); // Update User
                     followButton.setText("Unfollow");
                     Toast.makeText(getApplicationContext(), "Followed", Toast.LENGTH_SHORT).show();
                 }

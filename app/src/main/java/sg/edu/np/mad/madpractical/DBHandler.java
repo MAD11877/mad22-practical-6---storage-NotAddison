@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 + "("
                 + COLUMN_NAME + " TEXT,"
                 + COLUMN_DESCRIPTION + " TEXT,"
-                + COLUMN_ID + " TEXT," + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + COLUMN_FOLLOWED + " TEXT"
                 + ")";
         db.execSQL(CREATE_ACCOUNT_TABLE);
@@ -73,6 +74,7 @@ public class DBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, user.getName());
         values.put(COLUMN_DESCRIPTION, user.getDescription());
+        values.put(COLUMN_ID, user.getId());
         values.put(COLUMN_FOLLOWED, user.isFollowed());
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -81,28 +83,22 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void updateUser(String name){
+    public void updateUser(User user){
         String query = "SELECT * FROM "+ TABLE_USERS
-                + " WHERE " + COLUMN_NAME + "=\"" + name + "\"";
+                + " WHERE " + COLUMN_NAME + "=\"" + user.getName() + "\"";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
-        User user = new User();
-        // DELETE USER
-        if (cursor.moveToFirst()) {
-            user.setName(cursor.getString(0));
-            user.setFollowed(Boolean.parseBoolean(cursor.getString(3)));
-            user.setDescription(cursor.getString(1));
-            user.setId(Integer.parseInt(cursor.getString(2)));
-            db.delete(TABLE_USERS, COLUMN_ID + " = ?",
-                    new String[] { String.valueOf(user.getId()) });
-            cursor.close();
-        }
-        db.close();
+        // Getting Values
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_NAME, user.getName());
+        values.put(COLUMN_DESCRIPTION, user.getDescription());
+        values.put(COLUMN_ID, user.getId());
+        values.put(COLUMN_FOLLOWED, user.isFollowed());
 
-        // CREATE USER (TO DO)
-        addUser(user);
+        // Update DB
+        db.update("Users",values,"id=?",new String[]{String.valueOf(user.getId())});
 
     }
 }
