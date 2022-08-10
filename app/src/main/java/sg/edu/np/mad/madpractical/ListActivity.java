@@ -26,15 +26,15 @@ public class ListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
-        // img = (ImageView) findViewById(R.id.imageLogo);
+        //img = (ImageView) findViewById(R.id.imageLogo);
         DBHandler dbHandler = new DBHandler(this,null,null,1);
 
         // -- On Image click --
-        // ImageClick();
+        //ImageClick();
 
         // --- Generate 20 Random Users  ---
-        ArrayList<User> userList = new ArrayList<User>();
-        // userList = GenerateUsers(20,dbHandler);
+        //ArrayList<User> userList = new ArrayList<User>();
+        //userList = GenerateUsers(20,dbHandler);
         Log.v(TAG, String.valueOf(dbHandler.getUser().size()));
 
         for (User user:dbHandler.getUser()){

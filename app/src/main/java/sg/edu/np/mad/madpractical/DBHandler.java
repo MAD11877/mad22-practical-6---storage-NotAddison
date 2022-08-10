@@ -56,8 +56,9 @@ public class DBHandler extends SQLiteOpenHelper {
                 queryData.setName(cursor.getString(0));
                 queryData.setDescription(cursor.getString(1));
                 queryData.setId(Integer.parseInt(cursor.getString(2)));
-                queryData.setFollowed(Boolean.parseBoolean(cursor.getString(3)));
+                queryData.setFollowed((cursor.getInt(3) == 1)); // I tried parseBoolean but for some reason, it kept returning "false"
                 Log.v(TAG,"User"+ queryData.getName());
+                Log.v(TAG,"UserBool"+ (cursor.getInt(3) == 1));
                 userList.add(queryData);
             }
             while(cursor.moveToNext());
@@ -81,24 +82,15 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     public void updateUser(User user){
-        String query = "SELECT * FROM "+ TABLE_USERS
-                + " WHERE " + COLUMN_NAME + "=\"" + user.getName() + "\"";
-
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-
-        // Getting Values
+        String updateQuery = "SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_NAME + "= \"" + user.getName() + "\"";
+        db.rawQuery(updateQuery, null);
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, user.getName());
         values.put(COLUMN_DESCRIPTION, user.getDescription());
         values.put(COLUMN_ID, user.getId());
         values.put(COLUMN_FOLLOWED, user.isFollowed());
-
-
-        // Update DB
-        db.update(TABLE_USERS, values,COLUMN_ID + " = ?",
-                new String[] { String.valueOf(user.getId()) });
-        cursor.close();
+        db.update(TABLE_USERS, values, COLUMN_ID + " = ?", new String[]{String.valueOf(user.getId())});
         db.close();
     }
 }

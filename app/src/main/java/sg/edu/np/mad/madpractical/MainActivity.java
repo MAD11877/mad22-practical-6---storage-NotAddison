@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     @Override
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         User user = (User) receive.getSerializableExtra("user");
         TextView header = findViewById(R.id.header);
         Log.v(TAG, "(ListActivity) Number: " + user);
+        Log.v(TAG, "(ListActivity) isFollowed: " + user.isFollowed());
         header.setText("Name-" + user.getName());
 
         // -- Database
@@ -35,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         Button messageButton = findViewById(R.id.messageButton);
 
         // Check if user is following
-        if (user.followed){
+        if (user.isFollowed()){
             followButton.setText("Unfollow");
         }
 
@@ -43,17 +46,17 @@ public class MainActivity extends AppCompatActivity {
         followButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (user.followed){
-                    user.followed = false;
-                    dbHandler.updateUser(user); // Update User
+                if (user.isFollowed()){
+                    user.setFollowed(false);
                     followButton.setText("Follow");
                     Toast.makeText(getApplicationContext(), "Unfollowed", Toast.LENGTH_SHORT).show();
                 } else {
-                    user.followed = true;
-                    dbHandler.updateUser(user); // Update User
+                    user.setFollowed(true);
                     followButton.setText("Unfollow");
                     Toast.makeText(getApplicationContext(), "Followed", Toast.LENGTH_SHORT).show();
                 }
+                Log.v(TAG, "(ListActivity) isFollowed: " + user.isFollowed());
+                dbHandler.updateUser(user); // Update User
             }
         });
 

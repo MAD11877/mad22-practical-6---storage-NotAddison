@@ -3,6 +3,7 @@ package sg.edu.np.mad.madpractical;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,8 +70,8 @@ public class adapter extends RecyclerView.Adapter<adapter.MyViewHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull adapter.MyViewHolder holder, int position) {
-        User user = userList.get(position);
-
+        DBHandler dbHandler = new DBHandler(this.context,null,null,1);
+        int pos = position;
         String name = userList.get(position).name;
         holder.nameTxt.setText("name-" + name);
 
@@ -90,7 +91,10 @@ public class adapter extends RecyclerView.Adapter<adapter.MyViewHolder>{
                     @Override
                     public void onClick(DialogInterface dialog, int id)
                     {
+                        userList = dbHandler.getUser();        // List was not updating thus, value would always return the same boolean (false)
+                        User user = userList.get(pos);
                         Intent mainActivity = new Intent(context, MainActivity.class);
+                        Log.v("adapter", "onClick: " + user.getName() + " " + user.isFollowed());
                         mainActivity.putExtra("user", user);    // Class must implement serializable
                         context.startActivity(mainActivity);
                     }
